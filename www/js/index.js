@@ -60,7 +60,7 @@ var app = {
 		}
 
         console.log('Received Event: ' + id);
-    }
+    },
 	
 	getSearchItems: function() {
 		var searchItemsArray = localStorage.getItem("searchItemsArray");
@@ -71,7 +71,7 @@ var app = {
 			searchItemsArray = JSON.parse(searchItemsArray);
 		}
 		return searchItemsArray ;
-	}
+	},
 
 	addToSearch: function() {
 		if (!window["localStorage" ]) { 
@@ -95,7 +95,7 @@ var app = {
 		} else {
 			alert ("Enter Search Item");
 		}
-	}
+	},
 
 	deleteSearchItem: function(key) {
 		var searchItemsArray = app.getSearchItems();
@@ -110,7 +110,7 @@ var app = {
 			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
 			app.removeItemFromDOM(key);
 		}
-	}
+	},
 
 	addSearchItemToDOM: function(key, ItemObj) {
 		$('#searchItems').prepend($('<li/>', {
@@ -126,12 +126,12 @@ var app = {
 		}));
 
 		$('#searchItems').listview('refresh');
-	}
+	},
 
 	removeItemFromDOM: function(key) {
 		$('#'+key).remove();
 		return false
-	}
+	},
 
 	clearSearchItems: function() {
 		localStorage.clear();
