@@ -37,13 +37,104 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
+        /*var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
 
         listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+        receivedElement.setAttribute('style', 'display:block;');*/
+		
+		$('#add_button').click(function() {
+			AddToSearch();
+		});
+
+		$('#clear_button').click(function() {
+			clearSearchItems();  
+		});
+
+		var searchItemsArray = getSearchItems ();
+		for (var i = 0; i < searchItemsArray.length; i++) {
+			var key = searchItemsArray[i];
+			var value = JSON.parse(localStorage[key]);
+			addSearchItemToDOM(key, value);
+		}
 
         console.log('Received Event: ' + id);
     }
+	
+	getSearchItems: function() {
+		var searchItemsArray = localStorage.getItem("searchItemsArray");
+		if (!searchItemsArray) {
+			searchItemsArray = [];
+			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
+		} else {
+			searchItemsArray = JSON.parse(searchItemsArray);
+		}
+		return searchItemsArray ;
+	}
+
+	AddToSearch: function() {
+		if (!window["localStorage" ]) { 
+			alert ("No local storage support");
+			//you can put alternate code here
+			return false;
+		}
+
+		var searchItemsArray = getSearchItems();
+		var value = $("#note_text").val();
+
+		if(value!="" ) {
+			var currentDate = new Date();
+			var key = "Item_" + currentDate.getTime();
+			var ItemObj = {"value": value};
+			localStorage.setItem (key , JSON.stringify(ItemObj));    
+			searchItemsArray.push(key);
+			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
+			addSearchItemToDOM(key, ItemObj);
+			$("#note_text").val('');
+		} else {
+			alert ("Enter Search Item");
+		}
+	}
+
+	deleteSearchItem: function(key) {
+		var searchItemsArray = getSearchItems();
+		if (searchItemsArray) {
+			for (var i = 0; i < searchItemsArray.length; i++) {
+				if (key == searchItemsArray[i]) {
+					searchItemsArray.splice(i, 1);
+				}
+			}
+
+			localStorage.removeItem(key);
+			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
+			removeItemFromDOM(key);
+		}
+	}
+
+	addSearchItemToDOM: function(key, ItemObj) {
+		$('#searchItems').prepend($('<li/>', {
+			'data-role': 'list-divider',
+			'id': key
+		}).append($('<a/>', {
+			'href': 'test.html',
+			'data-transition': 'slide',
+			'text': ItemObj.value
+		})).click(function (event) {
+			event.stopPropagation();
+			deleteSearchItem(key);
+		}));
+
+		$('#searchItems').listview('refresh');
+	}
+
+	removeItemFromDOM: function(key) {
+		$('#'+key).remove();
+		return false
+	}
+
+	clearSearchItems: function() {
+		localStorage.clear();
+		$('#searchItems').children().remove('li');
+	}
 };
