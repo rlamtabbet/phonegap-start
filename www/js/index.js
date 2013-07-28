@@ -45,18 +45,18 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');*/
 		
 		$('#add_button').click(function() {
-			AddToSearch();
+			app.addToSearch();
 		});
 
 		$('#clear_button').click(function() {
-			clearSearchItems();  
+			app.clearSearchItems();  
 		});
 
-		var searchItemsArray = getSearchItems ();
+		var searchItemsArray = app.getSearchItems();
 		for (var i = 0; i < searchItemsArray.length; i++) {
 			var key = searchItemsArray[i];
 			var value = JSON.parse(localStorage[key]);
-			addSearchItemToDOM(key, value);
+			app.addSearchItemToDOM(key, value);
 		}
 
         console.log('Received Event: ' + id);
@@ -73,14 +73,14 @@ var app = {
 		return searchItemsArray ;
 	}
 
-	AddToSearch: function() {
+	addToSearch: function() {
 		if (!window["localStorage" ]) { 
 			alert ("No local storage support");
 			//you can put alternate code here
 			return false;
 		}
 
-		var searchItemsArray = getSearchItems();
+		var searchItemsArray = app.getSearchItems();
 		var value = $("#note_text").val();
 
 		if(value!="" ) {
@@ -90,7 +90,7 @@ var app = {
 			localStorage.setItem (key , JSON.stringify(ItemObj));    
 			searchItemsArray.push(key);
 			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
-			addSearchItemToDOM(key, ItemObj);
+			app.addSearchItemToDOM(key, ItemObj);
 			$("#note_text").val('');
 		} else {
 			alert ("Enter Search Item");
@@ -98,7 +98,7 @@ var app = {
 	}
 
 	deleteSearchItem: function(key) {
-		var searchItemsArray = getSearchItems();
+		var searchItemsArray = app.getSearchItems();
 		if (searchItemsArray) {
 			for (var i = 0; i < searchItemsArray.length; i++) {
 				if (key == searchItemsArray[i]) {
@@ -108,7 +108,7 @@ var app = {
 
 			localStorage.removeItem(key);
 			localStorage.setItem("searchItemsArray", JSON.stringify(searchItemsArray));
-			removeItemFromDOM(key);
+			app.removeItemFromDOM(key);
 		}
 	}
 
@@ -122,7 +122,7 @@ var app = {
 			'text': ItemObj.value
 		})).click(function (event) {
 			event.stopPropagation();
-			deleteSearchItem(key);
+			app.deleteSearchItem(key);
 		}));
 
 		$('#searchItems').listview('refresh');
